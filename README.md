@@ -1,2 +1,2 @@
 # rocks! papers!! scissors!!!
-its [rocks! papers!! scissors!!!](https://github.com/rainnerhmm/rockspapersscissors/tree/main/interactivescene)
+its [rocks! papers!! scissors!!!](https://rainnerhmm.github.io/rockspapersscissors-js/interactivescene/)

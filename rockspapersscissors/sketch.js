@@ -1,83 +1,111 @@
-// Interactive Scene
+// rocks! papers!! scissors!!!
 // Rainn Morphy
-// September 25th, 2024
-//
-// Extra for Experts:
-// - describe what you did to take this project "above and beyond"
-
-// 1's keycode is 49
-// 2's keycode is 50
-// 3's keycode is 51
+// September 25th, 2024 / Nov 17th, 2024
 
 const playerChoices = ["rocks", "papers", "scissors"];
 const enemyChoices = structuredClone(playerChoices);
-const bgColor = [5, 0, 32];
 
-let rocks = false;
-let papers = false;
-let scissors = false;
-let playerTurn = true;
-let musicVar;
+let gameState = "title";
+
+let playerScore, enemyScore;
+
+let bgMusic;
+
 let startButton;
-let player;
-let enemy;
-let referee;
-let startVar = true;
-let battleVar = false;
+
+let player, enemy, referee;
+
+// implement p5.palette?
+const PALETTE = { // for consistent colors, and ease of use
+  BG: [5, 0, 32],
+};
+
+let rocks, papers, scissors;
+let playerTurn = true;
+
 let sideSwitch = ["LEFT", "RIGHT"];
 let selection = 0;
 let randNum;
-let widthScaler;
-let heightScaler;
 
 
 function preload() {
   soundFormats("mp3"); // setting the sound format
-  musicVar = loadSound("assets/sounds/backgroundMusic.mp3"); // Loads Background Music (Music is 'Tentacular Circus' from the Splatoon Series)
+  bgMusic = loadSound("assets/sounds/bgMusic.mp3"); // Loads Background Music (Music is 'Tentacular Circus' from the Splatoon Series)
 
   startButton = loadImage("assets/graphics/startButton.gif"); // Loads the Start Button animation for title screen
+
   player = loadImage("assets/graphics/player.png"); // Loads the player graphic for title screen
   enemy = loadImage("assets/graphics/enemy.png"); // Loads the enemy graphic for title screen
   referee = loadImage("assets/graphics/referee.png"); // Loads the referee graphic for later
 }
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  backgroundMusic(); // Calls the Background Music function
-  widthScaler = 0.25 * width;
-  heightScaler = 0.25 * height;
 }
 
 function draw() {
-  background(bgColor);
-  startScreen();
-  battleScreen();
-  rpsPlayerMove();
-  rpsLogic();
+  background(PALETTE.BG);
+
+  if (gameState === 'game') {
+    battleScreen();
+    rpsPlayerMove();
+    rpsLogic();
+  }
+  else {
+    titleScreen();
+  }
+  switch (expr) {
+  case "Oranges":
+    console.log("Oranges are $0.59 a pound.");
+    break;
+  case "Apples":
+    console.log("Apples are $0.32 a pound.");
+    break;
+  case "Bananas":
+    console.log("Bananas are $0.48 a pound.");
+    break;
+  case "Cherries":
+    console.log("Cherries are $3.00 a pound.");
+    break;
+  case "Mangoes":
+  case "Papayas":
+    console.log("Mangoes and papayas are $2.79 a pound.");
+    break;
+  default:
+    console.log(`Sorry, we are out of ${expr}.`);
+}
+
+console.log("Is there anything else you'd like?");
+
+}
+
+function mousePressed() {
+  if (!bgMusic.isPlaying()) {
+    backgroundMusic(); // Calls the Background Music function
+  }
+  else if (gameState === "title" && bgMusic.isPlaying()) {
+    gameState = "game";
+  }
 }
 
 function backgroundMusic() {
-  musicVar.play();
-  musicVar.loop();
-  musicVar.amp(0.3);
-  userStartAudio();
+  bgMusic.play();
+  bgMusic.loop();
+  bgMusic.amp(0.3);
 }
 
-function startScreen() {
-  if (startVar === true) {
-
-    image(startButton, width/1.6, height/2.5, widthScaler, heightScaler); //centers start button vertically, and aligns to the right horizontally
-    rotate(-0.35);
-    image(player, width/-8, height/1.15, player.width*1.6, player.height*1.6); // semi-centers horizontally, and aligns to the bottom
-    rotate(3.15);
-    image(enemy, width/-1.13, height/-1.45, enemy.width*1.6, enemy.height*1.6); // semi-centers horizontally, and aligns to the top
-  }
+function titleScreen() {
+  image(startButton, width / 1.6, height / 2.5); //centers start button vertically, and aligns to the right horizontally
+  rotate(-0.35);
+  image(player, width / -8, height / 1.15, player.width * 1.6, player.height * 1.6); // semi-centers horizontally, and aligns to the bottom
+  rotate(3.15);
+  image(enemy, width / -1.13, height / -1.45, enemy.width * 1.6, enemy.height * 1.6); // semi-centers horizontally, and aligns to the top
 }
 
-function battleScreen(){
+function battleScreen() {
   playerTurn = true;
-  if (battleVar === true) {
-    image(player, width/4, height/2, player.width, player.height);
-  }
+
+  image(player, width / 4, height / 2, player.width, player.height);
+
 }
 function rpsPlayerMove() {
   if (rocks === true) {
@@ -109,15 +137,17 @@ function rpsEnemyMove() {
 }
 
 function keyTyped() {
-  if (startVar === true){
-    startVar = false;
-    battleVar = true;
+  if (!bgMusic.isPlaying()) {
+    backgroundMusic(); // Calls the Background Music function
+  }
+  else if (gameState === "title" && bgMusic.isPlaying()) {
+    gameState = "game";
   }
   else if (playerTurn === true) {
     rocks = false;
     papers = false;
     scissors = false;
-    randNum = Math.round(random(0,2));
+    randNum = Math.round(random(0, 2));
     // rpsEnemyMove();
     if (keyCode === 49) {
       rocks = true;
@@ -133,36 +163,34 @@ function keyTyped() {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  widthScaler = 0.25 * width;
-  heightScaler = 0.25 * height;
 }
 
-function rpsLogic() {
-  if (rocks === true && randNum === 0){
+function rpsLogic(player, enemy) {
+  if (rocks === true && randNum === 0) {
     text("rocktie", width / 2, height / 4);
   }
-  else if (papers === true && randNum === 1){
+  else if (papers === true && randNum === 1) {
     text("papertie", width / 2, height / 4);
   }
-  else if (scissors === true && randNum === 2){
+  else if (scissors === true && randNum === 2) {
     text("scissorstie", width / 2, height / 4);
   }
-  else if (rocks === true && randNum === 1){
+  else if (rocks === true && randNum === 1) {
     text("p2 paperwin", width / 2, height / 4);
   }
-  else if (rocks === true && randNum === 2){
+  else if (rocks === true && randNum === 2) {
     text("p1 rockwin", width / 2, height / 4);
   }
-  else if (papers === true && randNum === 0){
+  else if (papers === true && randNum === 0) {
     text("p1 paperwin", width / 2, height / 4);
   }
-  else if (papers === true && randNum === 2){
+  else if (papers === true && randNum === 2) {
     text("p2 scissorwin", width / 2, height / 4);
   }
-  else if (scissors === true && randNum === 0){
+  else if (scissors === true && randNum === 0) {
     text("p2 rockwin", width / 2, height / 4);
   }
-  else if (scissors === true && randNum === 1){
+  else if (scissors === true && randNum === 1) {
     text("p1 scissorwin", width / 2, height / 4);
   }
   playerTurn = true;

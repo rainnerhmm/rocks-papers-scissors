@@ -9,8 +9,8 @@
 // https://www.reddit.com/r/learnjavascript/comments/1cla2el/rock_paper_scissors_a_more_efficient_way/
 
 
-const playerChoices = ["rocks", "papers", "scissors"];
-const enemyChoices = structuredClone(playerChoices);
+const PLAYER_CHOICES = ["rocks", "papers", "scissors"];
+const ENEMY_CHOICES = structuredClone(PLAYER_CHOICES);
 
 let gameState = "title";
 
@@ -45,6 +45,7 @@ function preload() {
   enemy = loadImage("assets/graphics/enemy.png"); // Loads the enemy graphic for title screen
   referee = loadImage("assets/graphics/referee.png"); // Loads the referee graphic for later
 }
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
@@ -96,28 +97,28 @@ function rpsPlayerMove() {
   if (rocks === true) {
     fill(255);
     textAlign(sideSwitch[selection]);
-    text(playerChoices[0], width / 4, height / 2);
+    text(PLAYER_CHOICES[0], width / 4, height / 2);
     playerTurn = false;
     rpsEnemyMove();
   }
   else if (papers === true) {
     fill(255);
     textAlign(sideSwitch[selection]);
-    text(playerChoices[1], width / 4, height / 2);
+    text(PLAYER_CHOICES[1], width / 4, height / 2);
     playerTurn = false;
     rpsEnemyMove();
   }
   else if (scissors === true) {
     fill(255);
     textAlign(sideSwitch[selection]);
-    text(playerChoices[2], width / 4, height / 2);
+    text(PLAYER_CHOICES[2], width / 4, height / 2);
     playerTurn = false;
     rpsEnemyMove();
   }
 }
 
 function rpsEnemyMove() {
-  text(playerChoices[randNum], width / 2, height / 2);
+  text(PLAYER_CHOICES[randNum], width / 2, height / 2);
   console.log(randNum);
 }
 
